@@ -1,0 +1,23 @@
+#ifndef POKESHELL_MOVE_H
+#define POKESHELL_MOVE_H
+
+#include "types.h"
+
+// a move a pokemon can use
+typedef struct {
+    char name[32];
+    Type type;
+    int power;
+    int accuracy;    // out of 100
+    int pp;
+    int max_pp;
+} Move;
+
+// create a move with default values
+Move move_create(const char *name, Type type, int power, int accuracy, int pp);
+
+// load all moves from data file
+// returns number of moves loaded
+int move_load_all(Move *buffer, int max_moves);
+
+#endif

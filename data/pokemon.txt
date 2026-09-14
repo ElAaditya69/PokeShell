@@ -1,0 +1,5 @@
+# Pokemon species data
+# Format: name type base_hp base_atk base_def moves_at_level
+# Bulbasaur GRASS 45 49 49 Tackle:1 VineWhip:3 LeechSeed:7 PoisonPowder:10
+# Charmander FIRE 39 52 43 Scratch:1 Ember:6 Smokescreen:12 FireFang:16
+# Squirtle WATER 44 48 65 Tackle:1 WaterGun:6 Withdraw:10 Bite:13

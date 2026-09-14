@@ -1,0 +1,15 @@
+# Move data
+# Format: name type power accuracy pp
+# Tackle NORMAL 40 100 35
+# Scratch NORMAL 40 100 35
+# VineWhip GRASS 45 100 25
+# Ember FIRE 40 100 25
+# WaterGun WATER 40 100 25
+# LeechSeed GRASS 0 90 10
+# PoisonPowder GRASS 0 75 35
+# Smokescreen NORMAL 0 100 20
+# FireFang FIRE 65 95 15
+# Withdraw WATER 0 100 40
+# Bite DARK 60 100 25
+# ThunderShock ELECTRIC 40 100 30
+# Gust NORMAL 40 100 35

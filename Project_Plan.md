@@ -224,13 +224,13 @@ run: $(TARGET)
 
 Get the skeleton working. Everything compiles, structs are defined, type system works.
 
-- [ ] Set up the whole folder structure — all folders, all empty files with header guards
-- [ ] `git init`, make `.gitignore`, first commit: "initial project structure"
-- [ ] Write the Makefile, verify `make` compiles an empty main.c with no errors
-- [ ] Write out all the structs in the header files
-- [ ] Implement `types.c` — the type effectiveness table
-- [ ] Implement `pokemon.c` — create a pokemon from species data, calc stats at a level
-- [ ] Quick test in main.c — create a pokemon, print its stats, make sure it works
+- [x] Set up the whole folder structure — all folders, all empty files with header guards
+- [x] `git init`, make `.gitignore`, first commit: "initial project structure"
+- [x] Write the Makefile, verify `make` compiles an empty main.c with no errors
+- [x] Write out all the structs in the header files
+- [x] Implement `types.c` — the type effectiveness table
+- [x] Implement `pokemon.c` — create a pokemon from species data, calc stats at a level
+- [x] Quick test in main.c — create a pokemon, print its stats, make sure it works
 - [ ] Commit: "core data structures and type system done"
 
 ### Milestone 2 — Battle Engine (Days 3-5)
@@ -353,11 +353,11 @@ MAP current_route_1
 
 Right now, before writing any actual game code:
 
-1. Create the full folder structure on my machine at `~/Documents/pokeshell`
-2. `git init` and create `.gitignore`
-3. Write the Makefile
-4. Create all header and source files as empty stubs (just header guards in .h, empty main.c)
-5. Make sure `make` compiles without errors
+1. ~~Create the full folder structure on my machine at `~/Documents/pokeshell`~~
+2. ~~`git init` and create `.gitignore`~~
+3. ~~Write the Makefile~~
+4. ~~Create all header and source files as empty stubs (just header guards in .h, empty main.c)~~
+5. ~~Make sure `make` compiles without errors~~
 6. `git add . && git commit -m "initial project structure"`
 
 That's the foundation. Nothing works yet, but everything is in place and compiling. Then I build from there, milestone by milestone.
