@@ -16,6 +16,8 @@ typedef enum {
     STATE_WIN
 } GameState;
 
+#define GYM_TEAM_SIZE 3
+
 // the entire game state
 typedef struct {
     GameState state;
@@ -23,6 +25,12 @@ typedef struct {
     Map current_map;
     Pokemon wild_pokemon;
     int battle_turn;   // 0 = player turn, 1 = enemy turn
+
+    /* gym leader battle */
+    int is_gym_battle;
+    Pokemon gym_team[GYM_TEAM_SIZE];
+    int gym_team_size;
+    int gym_current;   /* index of the gym leader's active pokemon */
 } Game;
 
 // initialize the game

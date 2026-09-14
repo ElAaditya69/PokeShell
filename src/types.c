@@ -1,5 +1,6 @@
 #include "types.h"
 #include <string.h>
+#include <ctype.h>
 
 // effectiveness chart
 // rows = attacker, columns = defender
@@ -33,11 +34,18 @@ const char *type_name(Type type)
 
 Type type_from_name(const char *name)
 {
-    if (strcmp(name, "Normal") == 0) return TYPE_NORMAL;
-    if (strcmp(name, "Fire") == 0)   return TYPE_FIRE;
-    if (strcmp(name, "Water") == 0)  return TYPE_WATER;
-    if (strcmp(name, "Grass") == 0)  return TYPE_GRASS;
-    if (strcmp(name, "Electric") == 0) return TYPE_ELECTRIC;
-    if (strcmp(name, "Ice") == 0)    return TYPE_ICE;
+    /* compare case-insensitively so UPPERCASE from moves.txt also works */
+    char buf[32];
+    int i;
+    for (i = 0; name[i] && i < (int)sizeof(buf) - 1; i++)
+        buf[i] = (char)toupper((unsigned char)name[i]);
+    buf[i] = '\0';
+
+    if (strcmp(buf, "NORMAL") == 0)   return TYPE_NORMAL;
+    if (strcmp(buf, "FIRE") == 0)     return TYPE_FIRE;
+    if (strcmp(buf, "WATER") == 0)    return TYPE_WATER;
+    if (strcmp(buf, "GRASS") == 0)    return TYPE_GRASS;
+    if (strcmp(buf, "ELECTRIC") == 0) return TYPE_ELECTRIC;
+    if (strcmp(buf, "ICE") == 0)      return TYPE_ICE;
     return TYPE_NORMAL;  // default
 }

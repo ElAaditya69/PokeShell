@@ -36,6 +36,9 @@ Pokemon pokemon_create(const char *name, Type type, int level);
 // create a starter pokemon at level 5 with correct base stats and starting moves
 Pokemon pokemon_create_starter(const char *name, Type type, int base_hp, int base_atk, int base_def);
 
+// create a wild pokemon at a given level with species-appropriate moves
+Pokemon pokemon_create_wild(const char *name, Type type, int base_hp, int base_atk, int base_def, int level);
+
 // calculate a stat based on base stat and level
 int pokemon_calc_stat(int base, int level);
 

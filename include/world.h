@@ -7,10 +7,13 @@ typedef enum {
     TILE_GRASS,
     TILE_WATER,
     TILE_WALL,
-    TILE_TOWN
+    TILE_TOWN,
+    TILE_CENTER,
+    TILE_GYM,
+    TILE_WILD_GRASS
 } TileType;
 
-#define MAX_MAP_SIZE 20
+#define MAX_MAP_SIZE 32
 
 // a map
 typedef struct {
@@ -18,6 +21,7 @@ typedef struct {
     int width;
     int height;
     int encounter_rate;   // 1 in N steps triggers encounter in grass
+    int gym_defeated;     // 1 if the gym leader has been beaten
     char name[32];
 } Map;
 

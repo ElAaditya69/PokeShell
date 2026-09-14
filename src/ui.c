@@ -1,5 +1,6 @@
 #include "ui.h"
 #include "pokemon.h"
+#include "player.h"
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,7 +74,8 @@ void ui_print_hp_bar(const Pokemon *pokemon)
 void ui_print_battle(const Pokemon *player_pokemon, const Pokemon *wild)
 {
     ui_clear();
-    printf("\n  === WILD %s APPEARED! ===\n\n", wild->name);
+    printf("\n  WILD %s (%s) Lv.%d APPEARED!\n\n",
+           wild->name, type_name(wild->type), wild->level);
     ui_print_hp_bar(wild);
     printf("\n");
     ui_print_hp_bar(player_pokemon);
@@ -151,20 +153,24 @@ void ui_print_map(const Map *map, const Player *player)
                 printf("@");
             } else {
                 switch (map->tiles[y][x]) {
-                    case TILE_GRASS:  printf(".");  break;
-                    case TILE_WATER:  printf("~");  break;
-                    case TILE_TOWN:   printf("T");  break;
-                    case TILE_PATH:   printf("-");  break;
-                    case TILE_WALL:   printf("#");  break;
-                    default:          printf("?");  break;
+                    case TILE_GRASS:      printf(".");  break;
+                    case TILE_WATER:      printf("~");  break;
+                    case TILE_TOWN:       printf("T");  break;
+                    case TILE_PATH:       printf("-");  break;
+                    case TILE_WALL:       printf("#");  break;
+                    case TILE_CENTER:     printf("C");  break;
+                    case TILE_GYM:        printf("G");  break;
+                    case TILE_WILD_GRASS: printf("W");  break;
+                    default:              printf("?");  break;
                 }
             }
         }
         printf("\n");
     }
 
-    printf("\n  @ = You  . = Grass  ~ = Water  T = Town  # = Wall  - = Path\n");
-    printf("  Move: W/A/S/D  |  Quit: Q\n\n");
+    printf("\n  @ = You  . = Grass  ~ = Water  T = Town  # = Wall\n");
+    printf("  C = Center  G = Gym  W = Wild Grass  - = Path\n");
+    printf("  Move: W/A/S/D  |  Team: T  |  Quit: Q\n\n");
 }
 
 void ui_game_over(void)
@@ -185,4 +191,19 @@ void ui_victory(void)
     printf("   YOU ARE THE CHAMPION!\n");
     printf("  ====================\n\n");
     printf("  Congratulations! You did it!\n\n");
+}
+
+void ui_show_team(const Player *player)
+{
+    ui_clear();
+    printf("\n  === YOUR TEAM ===\n\n");
+    printf("  Badges: %d  |  Pokeballs: %d\n\n", player->badges, player->pokeballs);
+    for (int i = 0; i < player->team_size; i++) {
+        const Pokemon *p = &player->team[i];
+        printf("  %d. %-10s  %s  Lv.%2d  HP: %d/%d\n",
+               i + 1, p->name, type_name(p->type), p->level,
+               p->hp, p->max_hp);
+    }
+    printf("\n  Press ENTER to return...\n");
+    getchar();
 }

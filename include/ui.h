@@ -45,4 +45,7 @@ void ui_game_over(void);
 // print victory screen
 void ui_victory(void);
 
+// show the player's team (names, types, levels, HP) — waits for ENTER
+void ui_show_team(const Player *player);
+
 #endif

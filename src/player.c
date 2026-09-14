@@ -10,8 +10,8 @@ Player player_create(const char *name)
     p.team_size = 0;
     p.pokeballs = START_POKEBALLS;
     p.badges = 0;
-    p.pos_x = 5;
-    p.pos_y = 5;
+    p.pos_x = 0;
+    p.pos_y = 0;
 
     return p;
 }
