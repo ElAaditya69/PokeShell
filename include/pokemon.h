@@ -33,6 +33,9 @@ typedef struct {
 // create a pokemon from species data at a given level
 Pokemon pokemon_create(const char *name, Type type, int level);
 
+// create a starter pokemon at level 5 with correct base stats and starting moves
+Pokemon pokemon_create_starter(const char *name, Type type, int base_hp, int base_atk, int base_def);
+
 // calculate a stat based on base stat and level
 int pokemon_calc_stat(int base, int level);
 

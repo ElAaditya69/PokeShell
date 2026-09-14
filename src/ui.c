@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "pokemon.h"
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,8 +26,14 @@ void ui_print_title(void)
     getchar();
 }
 
-int ui_starter_select(Pokemon starters[], int count)
+int ui_starter_select(void)
 {
+    Pokemon starters[3];
+    starters[0] = pokemon_create_starter("Bulbasaur", TYPE_GRASS, 45, 49, 49);
+    starters[1] = pokemon_create_starter("Charmander", TYPE_FIRE,  39, 52, 43);
+    starters[2] = pokemon_create_starter("Squirtle",   TYPE_WATER, 44, 48, 65);
+    int count = 3;
+
     ui_clear();
     printf("  Choose your starter Pokemon:\n\n");
     for (int i = 0; i < count; i++) {
@@ -73,10 +80,9 @@ void ui_print_battle(const Pokemon *player_pokemon, const Pokemon *wild)
     printf("\n");
 }
 
-BattleAction ui_battle_menu(const Player *player)
+BattleAction ui_battle_menu(const Player *player, const Pokemon *active)
 {
-    (void)player;
-    printf("  What will you do?\n");
+    printf("  What will %s do?\n", active->name);
     printf("  1. Fight\n");
     printf("  2. Catch (Pokeballs: %d)\n", player->pokeballs);
     printf("  3. Run\n");
@@ -94,18 +100,71 @@ BattleAction ui_battle_menu(const Player *player)
     }
 }
 
+int ui_move_select(const Pokemon *pokemon)
+{
+    printf("  Choose a move:\n");
+    for (int i = 0; i < pokemon->move_count; i++) {
+        const Move *m = &pokemon->moves[i];
+        printf("  %d. %-12s  TYPE:%-8s  PWR:%3d  PP:%d/%d\n",
+               i + 1, m->name, type_name(m->type),
+               m->power, m->pp, m->max_pp);
+    }
+    printf("  0. Back\n");
+    printf("  > ");
+
+    int choice = 0;
+    scanf("%d", &choice);
+    while (getchar() != '\n');
+
+    if (choice == 0) return -1;
+    if (choice < 1 || choice > pokemon->move_count) return -1;
+    return choice - 1;
+}
+
 void ui_message(const char *msg)
 {
-    printf("  %s\n", msg);
+    printf("\n  %s\n", msg);
 }
 
 char ui_get_key(void)
 {
     char c;
-    // TODO: implement raw terminal input (no enter needed)
     scanf(" %c", &c);
     while (getchar() != '\n');
     return c;
+}
+
+void ui_wait(void)
+{
+    printf("  Press ENTER to continue...");
+    getchar();
+}
+
+void ui_print_map(const Map *map, const Player *player)
+{
+    printf("\n  === %s ===\n\n", map->name);
+
+    for (int y = 0; y < map->height; y++) {
+        printf("  ");
+        for (int x = 0; x < map->width; x++) {
+            if (x == player->pos_x && y == player->pos_y) {
+                printf("@");
+            } else {
+                switch (map->tiles[y][x]) {
+                    case TILE_GRASS:  printf(".");  break;
+                    case TILE_WATER:  printf("~");  break;
+                    case TILE_TOWN:   printf("T");  break;
+                    case TILE_PATH:   printf("-");  break;
+                    case TILE_WALL:   printf("#");  break;
+                    default:          printf("?");  break;
+                }
+            }
+        }
+        printf("\n");
+    }
+
+    printf("\n  @ = You  . = Grass  ~ = Water  T = Town  # = Wall  - = Path\n");
+    printf("  Move: W/A/S/D  |  Quit: Q\n\n");
 }
 
 void ui_game_over(void)

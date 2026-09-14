@@ -29,4 +29,7 @@ int battle_try_catch(Pokemon *wild, int pokeball_count);
 // the enemy ai picks a move (just picks the strongest one for now)
 Move *battle_enemy_pick_move(Pokemon *enemy);
 
+// generate a wild pokemon for the given route level
+Pokemon battle_generate_wild(int route_level);
+
 #endif

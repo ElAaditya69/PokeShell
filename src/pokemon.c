@@ -1,4 +1,5 @@
 #include "pokemon.h"
+#include "move.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -52,4 +53,28 @@ void pokemon_heal(Pokemon *pokemon)
 int pokemon_is_fainted(const Pokemon *pokemon)
 {
     return pokemon->hp <= 0;
+}
+
+Pokemon pokemon_create_starter(const char *name, Type type, int base_hp, int base_atk, int base_def)
+{
+    Pokemon p;
+    memset(&p, 0, sizeof(Pokemon));
+
+    int level = 5;
+
+    strncpy(p.name, name, sizeof(p.name) - 1);
+    p.type = type;
+    p.level = level;
+    p.max_hp = pokemon_calc_stat(base_hp, level);
+    p.hp = p.max_hp;
+    p.attack = pokemon_calc_stat(base_atk, level);
+    p.defense = pokemon_calc_stat(base_def, level);
+    p.xp = 0;
+    p.xp_to_next = level * level * 5;
+    p.move_count = 0;
+
+    // assign starting moves
+    move_get_starter_moves(name, p.moves, &p.move_count);
+
+    return p;
 }
