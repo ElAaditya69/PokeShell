@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static void battle_execute_move(Pokemon *attacker, Pokemon *defender, Move *move)
 {
@@ -59,6 +60,21 @@ void battle_run(Player *player, Pokemon *wild)
                 continue;
             }
             player->pokeballs--;
+
+            /* catch animation */
+            printf("  You throw a Pokeball...\n");
+            fflush(stdout);
+            usleep(300000);
+            printf("  . ");
+            fflush(stdout);
+            usleep(300000);
+            printf(". ");
+            fflush(stdout);
+            usleep(300000);
+            printf(".\n");
+            fflush(stdout);
+            usleep(300000);
+
             caught = battle_try_catch(wild, player->pokeballs + 1);
             if (caught) {
                 printf("  You caught %s! Added to your team!\n", wild->name);

@@ -19,6 +19,7 @@ void game_init(Game *game)
 void game_run(Game *game)
 {
     srand((unsigned int)time(NULL));
+    ui_init_terminal();
     game->state = STATE_TITLE;
 
     while (game->state != STATE_GAME_OVER) {
@@ -208,6 +209,8 @@ void game_run(Game *game)
 
     ui_clear();
     ui_game_over();
+    ui_wait();
+    ui_restore_terminal();
 }
 
 void game_cleanup(Game *game)

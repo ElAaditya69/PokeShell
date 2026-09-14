@@ -6,6 +6,12 @@
 #include "battle.h"
 #include "world.h"
 
+// initialize terminal for raw input (call at start of game)
+void ui_init_terminal(void);
+
+// restore terminal to original state (called automatically via atexit)
+void ui_restore_terminal(void);
+
 // clear the terminal screen
 void ui_clear(void);
 
