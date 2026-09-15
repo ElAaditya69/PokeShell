@@ -6,29 +6,44 @@
 #include <string.h>
 #include <unistd.h>
 
-static void battle_execute_move(Pokemon *attacker, Pokemon *defender, Move *move)
+static BattleMoveResult battle_execute_move(Pokemon *attacker, Pokemon *defender, Move *move)
 {
-    if (move->pp <= 0) return;
+    BattleMoveResult result;
+    memset(&result, 0, sizeof(result));
+    strncpy(result.attacker, attacker->name, 31);
+    strncpy(result.defender, defender->name, 31);
+    strncpy(result.move_name, move->name, 31);
+
+    if (move->pp <= 0) {
+        result.missed = 1;
+        result.effectiveness = 0.0f;
+        return result;
+    }
     move->pp--;
 
     /* accuracy check */
     int roll = rand() % 100;
     if (roll >= move->accuracy) {
-        printf("  %s used %s... but it missed!\n", attacker->name, move->name);
-        return;
+        result.missed = 1;
+        result.effectiveness = 0.0f;
+        return result;
     }
 
     int damage = battle_calculate_damage(attacker, defender, move);
 
     if (damage == 0) {
-        printf("  %s used %s... it had no effect!\n", attacker->name, move->name);
-        return;
+        result.missed = 1;
+        result.effectiveness = 0.0f;
+        return result;
     }
 
     defender->hp -= damage;
     if (defender->hp < 0) defender->hp = 0;
 
-    printf("  %s used %s! Dealt %d damage!\n", attacker->name, move->name, damage);
+    result.damage = damage;
+    result.effectiveness = type_effectiveness(move->type, defender->type);
+    result.missed = 0;
+    return result;
 }
 
 void battle_run(Player *player, Pokemon *wild)
@@ -44,52 +59,44 @@ void battle_run(Player *player, Pokemon *wild)
         if (action == BATTLE_FIGHT) {
             int move_idx = ui_move_select(player_pokemon);
             if (move_idx >= 0 && move_idx < player_pokemon->move_count) {
-                battle_execute_move(player_pokemon, wild, &player_pokemon->moves[move_idx]);
+                BattleMoveResult r = battle_execute_move(player_pokemon, wild,
+                                                         &player_pokemon->moves[move_idx]);
+                ui_move_result(r.attacker, r.move_name, r.damage, r.effectiveness);
+                ui_wait();
             } else {
                 continue;  /* back pressed, re-show battle menu */
             }
         } else if (action == BATTLE_CATCH) {
             if (player->pokeballs <= 0) {
-                printf("  No Pokeballs left!\n");
+                ui_no_pokeballs();
                 ui_wait();
                 continue;
             }
             if (player->team_size >= MAX_TEAM) {
-                printf("  Your team is full! Release a pokemon first.\n");
+                ui_team_full();
                 ui_wait();
                 continue;
             }
             player->pokeballs--;
 
             /* catch animation */
-            printf("  You throw a Pokeball...\n");
-            fflush(stdout);
-            usleep(300000);
-            printf("  . ");
-            fflush(stdout);
-            usleep(300000);
-            printf(". ");
-            fflush(stdout);
-            usleep(300000);
-            printf(".\n");
-            fflush(stdout);
-            usleep(300000);
+            ui_catch_animation(wild);
 
             caught = battle_try_catch(wild, player->pokeballs + 1);
             if (caught) {
-                printf("  You caught %s! Added to your team!\n", wild->name);
+                ui_catch_success(wild);
                 player_add_pokemon(player, *wild);
             } else {
-                printf("  Oh no! %s broke free!\n", wild->name);
+                ui_catch_failure(wild);
             }
             ui_wait();
         } else if (action == BATTLE_RUN) {
             if (rand() % 2 == 0) {
                 escaped = 1;
-                printf("  Got away safely!\n");
+                ui_run_result(1);
                 ui_wait();
             } else {
-                printf("  Couldn't get away!\n");
+                ui_run_result(0);
                 ui_wait();
             }
         }
@@ -97,8 +104,10 @@ void battle_run(Player *player, Pokemon *wild)
         /* enemy turn if battle isn't over */
         if (!pokemon_is_fainted(player_pokemon) && !pokemon_is_fainted(wild) && !escaped && !caught) {
             Move *enemy_move = battle_enemy_pick_move(wild);
-            if (enemy_move)
-                battle_execute_move(wild, player_pokemon, enemy_move);
+            if (enemy_move) {
+                BattleMoveResult r = battle_execute_move(wild, player_pokemon, enemy_move);
+                ui_move_result(r.attacker, r.move_name, r.damage, r.effectiveness);
+            }
             ui_wait();
         }
     }
@@ -107,11 +116,11 @@ void battle_run(Player *player, Pokemon *wild)
 
     if (pokemon_is_fainted(wild)) {
         int xp = player_pokemon->level * 15;
-        printf("\n  %s fainted! Gained %d XP!\n", wild->name, xp);
+        ui_fainted(wild->name, xp, 1);
         pokemon_gain_xp(player_pokemon, xp);
         ui_wait();
     } else if (pokemon_is_fainted(player_pokemon)) {
-        printf("\n  %s fainted!\n", player_pokemon->name);
+        ui_fainted(player_pokemon->name, 0, 0);
         ui_wait();
     }
 }

@@ -15,6 +15,16 @@ typedef enum {
     BATTLE_CAUGHT
 } BattleAction;
 
+// result of a single move execution
+typedef struct {
+    char attacker[32];
+    char defender[32];
+    char move_name[32];
+    int damage;
+    float effectiveness;  /* 0.0=miss, 0.5=not very, 1.0=normal, 2.0=super */
+    int missed;
+} BattleMoveResult;
+
 // run a full battle between the player's current pokemon and a wild pokemon
 // returns when the battle ends
 void battle_run(Player *player, Pokemon *wild);

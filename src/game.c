@@ -47,7 +47,7 @@ void game_run(Game *game)
             player_add_pokemon(&game->player, starter);
 
             ui_clear();
-            printf("  You chose %s!\n", starter.name);
+            ui_chosen(starter.name);
             ui_wait();
             game->state = STATE_EXPLORE;
             break;
@@ -99,8 +99,7 @@ void game_run(Game *game)
 
                 if (tile == TILE_CENTER) {
                     player_heal_team(&game->player);
-                    printf("\n  Welcome to the Pokemon Center!\n");
-                    printf("  Your team has been fully healed!\n");
+                    ui_pokemon_center();
                     ui_wait();
                     break;  /* no encounter on center tile */
                 }
@@ -122,7 +121,7 @@ void game_run(Game *game)
                     }
                     /* set wild_pokemon to first gym pokemon */
                     game->wild_pokemon = game->gym_team[0];
-                    printf("\n  Gym Leader: \"I accept your challenge!\"\n");
+                    ui_gym_leader_intro("Brock");
                     ui_wait();
                     game->state = STATE_BATTLE;
                     break;
@@ -167,8 +166,7 @@ void game_run(Game *game)
                     /* next gym pokemon still alive? check */
                     if (!pokemon_is_fainted(&game->gym_team[game->gym_current])) {
                         game->wild_pokemon = game->gym_team[game->gym_current];
-                        printf("\n  Gym Leader sends out %s!\n",
-                               game->gym_team[game->gym_current].name);
+                        ui_gym_leader_sends(&game->gym_team[game->gym_current]);
                         ui_wait();
                         game->state = STATE_BATTLE;
                         break;
@@ -180,8 +178,7 @@ void game_run(Game *game)
                     }
                     if (game->gym_current < game->gym_team_size) {
                         game->wild_pokemon = game->gym_team[game->gym_current];
-                        printf("\n  Gym Leader sends out %s!\n",
-                               game->gym_team[game->gym_current].name);
+                        ui_gym_leader_sends(&game->gym_team[game->gym_current]);
                         ui_wait();
                         game->state = STATE_BATTLE;
                         break;
@@ -191,10 +188,7 @@ void game_run(Game *game)
                 game->current_map.gym_defeated = 1;
                 game->player.badges++;
                 game->is_gym_battle = 0;
-                printf("\n  ==============================\n");
-                printf("  You earned the Boulder Badge!\n");
-                printf("  ==============================\n");
-                printf("  Badges: %d\n", game->player.badges);
+                ui_gym_badge();
                 ui_wait();
             }
 
